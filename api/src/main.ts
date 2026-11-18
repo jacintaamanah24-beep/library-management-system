@@ -1,19 +1,24 @@
 
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module.js';
 import { ValidationPipe } from '@nestjs/common';
+import { AppModule } from './app.module.js';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // Allow requests from the React frontend
+  app.enableCors({
+    origin: 'http://localhost:5173',
+  });
+
+  // Validate incoming request data
   app.useGlobalPipes(
-  new ValidationPipe({
-    whitelist: true,
-  }),
-);
+    new ValidationPipe({
+      whitelist: true,
+    }),
+  );
 
-  await app.listen(process.env.PORT ?? 3000);
-
-  console.log('Library Management API is running!');
+  await app.listen(3000);
 }
 
-await bootstrap();
+bootstrap();
